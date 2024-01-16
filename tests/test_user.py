@@ -43,6 +43,43 @@ class TestUser(unittest.TestCase):
         test_user = User()
         self.assertTrue(issubclass(User, BaseModel))
 
+    def test_user_str_representation(self):
+        """
+        Check if user is present in the string representation
+        """
+        test_user = User()
+        test_user.email = "cyprian@example.com"
+        test_user.first_name = "Cyprian"
+        test_user.last_name = "Abala"
+        test_user.password = "password123"
+        user_str = str(test_user)
+        self.assertIn("User", user_str)
+        self.assertIn("cyprian@example.com", user_str)
+        self.assertIn("Cyprian", user_str)
+        self.assertIn("Abala", user_str)
+
+    def test_user_to_dict(self):
+        """
+        Check if the user instances match the set values
+        """
+        test_user = User()
+        test_user.email = "cyprian@example.com"
+        test_user.first_name = "Cyprian"
+        test_user.last_name = "Abala"
+        test_user.save()
+        user_dict = test_user.to_dict()
+        self.assertEqual(user_dict['email'], "cyprian@example.com")
+        self.assertEqual(user_dict['first_name'], "Cyprian")
+        self.assertEqual(user_dict['last_name'], "Abala")
+
+    def test_user_id_generation(self):
+        """
+        Ensure that the 'id' attribute of each User instance is unique
+        """
+        test_user = User()
+        user2 = User()
+        self.assertNotEqual(test_user.id, user2.id)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -7,6 +7,11 @@ import shlex
 from models.base_model import BaseModel
 from models import storage
 from models.user import User
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.place import Place
+from models.review import Review
 
 
 class HBNBCommand(cmd.Cmd):
@@ -14,17 +19,17 @@ class HBNBCommand(cmd.Cmd):
 
     """
     prompt = "(hbnb) "
-    valid_classes = ["BaseModel", "User"]
+    valid_classes = ["BaseModel", "User", "State", "City", "Amenity", "Place", "Review"]
 
     def do_quit(self, arg):
         """
-
+        Quit the program
         """
         return True
 
     def do_create(self, arg):
         """
-        create a new instance of Basemodel and saves it in the JSON file.
+        create a new instance of Basemodel and save it to the JSON file.
         usage: create <class_name>
         """
         commands = shlex.split(arg)
@@ -89,15 +94,35 @@ class HBNBCommand(cmd.Cmd):
         """
         objects = storage.all()
         commands = shlex.split(arg)
+        print(f"{commands = }")
         if len(commands) == 0:
             for key, value in objects.items():
                 print(str(value))
         elif commands[0] not in self.valid_classes:
-            print("** class doesn't exist **")
+            print("** class name missing **")
         else:
             for key, value in objects.items():
                 if key.split('.')[0] == commands[0]:
                     print(str(value))
+
+    def default(self, arg):
+        """
+        Default behaviour for cmd module for invalid system
+        """
+        arg_list = arg.split('.')
+        incoming_class_name = arg_list[0]
+        command = arg_list[1].split('(')
+        incoming_method = command[0]
+        method_dict = {
+            'all': self.do_all(),
+            'show': self.do_show(),
+            'destroy': self.do_destroy(),
+            'update': self.do_update()
+        }
+        if incoming_method in method_dict.keys():
+            return method_dict[incoming_method]("{}{}".format(incoming_class_name, ''))
+        print("*** Unknown syntax: {}".format(arg))
+        return False
 
     def do_update(self, arg):
         """
@@ -139,9 +164,8 @@ class HBNBCommand(cmd.Cmd):
 
     def do_EOF(self, arg):
         """
-
+        Handle the End-of-File (Ctrl+0) event to exit the program
         """
-        print()
         return True
 
 
