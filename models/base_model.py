@@ -26,16 +26,17 @@ class BaseModel:
 
     def save(self):
         """
-
-        :return:
+        Update updated_at with the current datetime.
         """
         self.updated_at = datetime.utcnow()
         models.storage.save()
 
     def to_dict(self):
         """
+        Return the dictionary of the BaseModel instance.
 
-        :return:
+        Includes the key/value pair __class__ representing
+        the class name of the object.
         """
         instance_dict = self.__dict__.copy()
         instance_dict["__class__"] = self.__class__.__name__
@@ -45,6 +46,9 @@ class BaseModel:
         return instance_dict
 
     def __str__(self):
+        """
+        Return the print/str representation of the BaseModel instance
+        """
         class_name = self.__class__.__name__
         return "[{}] ({}) {}".format(class_name, self.id, self.__dict__)
 
