@@ -9,6 +9,9 @@ from models.base_model import BaseModel
 
 class TestBasemodel(unittest.TestCase):
     def test_init(self):
+        """
+        Check to see that all the attributes have values when an instance of a Base class is created.
+        """
         mine_model = BaseModel()
 
         self.assertIsNotNone(mine_model.id)
@@ -16,6 +19,9 @@ class TestBasemodel(unittest.TestCase):
         self.assertIsNotNone(mine_model.updated_at)
 
     def test_save(self):
+        """
+        Check to see that the initial update time and the current update time are not equal.
+        """
         mine_model = BaseModel()
 
         initial_update = mine_model.updated_at
@@ -23,6 +29,9 @@ class TestBasemodel(unittest.TestCase):
         self.assertNotEqual(initial_update, current_update)
 
     def test_to_dict(self):
+        """
+        Checks to see if to_dict method is working as expected.
+        """
         mine_model = BaseModel()
 
         mine_model_dict = mine_model.to_dict()
@@ -35,6 +44,9 @@ class TestBasemodel(unittest.TestCase):
         self.assertEqual(mine_model_dict['updated_at'], mine_model.updated_at.isoformat())
 
     def test_str(self):
+        """
+        Check on the string representation of new instance created.
+        """
         mine_model = BaseModel()
 
         self.assertTrue(str(mine_model).startswith('[BaseModel]'))

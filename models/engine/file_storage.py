@@ -38,31 +38,20 @@ class FileStorage:
         return FileStorage.__objects
 
     def save(self):
-        """
-        This serializes the __objects dictionary into JSON format and saves it to the file specified by __file_path
-        """
-        all_objs = FileStorage.__objects
-        obj_dict = {}
-        for obj in all_objs.keys():
-            obj_dict[obj] = all_objs[obj].to_dict()
-
-        with open(FileStorage.__file_path, "w", encoding="utf-8") as file:
-            json.dump(obj_dict, file)
+        """Serialize __objects to the JSON file __file_path."""
+        odict = FileStorage.__objects
+        objdict = {obj: odict[obj].to_dict() for obj in odict.keys()}
+        with open(FileStorage.__file_path, "w") as f:
+            json.dump(objdict, f)
 
     def reload(self):
-        """
-
-        :param self:
-        :return:
-        """
-        if os.path.isfile(FileStorage.__file_path):
-            with open(FileStorage.__file_path, "r", encoding="utf-8") as file:
-                try:
-                    obj_dict = json.load(file)
-                    for key, values in obj_dict.item():
-                        class_name, obj_id = key.split('.')
-                        cls = eval(class_name)
-                        instance = cls(**values)
-                        FileStorage.__objects[key] = instance
-                except FileNotFoundError:
-                    return
+        """Deserialize the JSON file __file_path to __objects, if it exists."""
+        try:
+            with open(FileStorage.__file_path) as f:
+                objdict = json.load(f)
+                for o in objdict.values():
+                    cls_name = o["__class__"]
+                    del o["__class__"]
+                    self.new(eval(cls_name)(**o))
+        except FileNotFoundError:
+            return
