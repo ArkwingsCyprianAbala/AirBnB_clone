@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-
+Base class that gets inherited by other classes
 """
 
 import uuid
@@ -56,6 +56,7 @@ class BaseModel:
 if __name__ == '__main__':
     my_model = BaseModel()
     print(my_model.__class__.__name__)
+    print(my_model.__dict__)
     my_model.name = "My first model"
     my_model.my_number = 89
     print(my_model)
